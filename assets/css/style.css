@@ -1,3 +1,31 @@
 i {
     color: red;
 }
+.actions{
+   margin-left: 70rem;
+}
+ ul#actions
+{  
+    display:none;
+}
+.actions:hover ul#actions
+{
+    display: block;
+}
+#sortBtn{
+   background-color: red;
+   padding-right: 30px;
+   padding-left: 30px;
+}
+.ascendingBtn{
+   background-color: rgb(151, 152, 156);
+   margin-top: -999px;
+   padding-right: 30px;
+   font-size: larger;
+}
+.descendingBtn{
+   font-size: larger;
+   margin-top: 10px;
+   background-color: rgb(151, 152, 156);
+   padding-right: 30px;
+}
