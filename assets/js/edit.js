@@ -11,7 +11,7 @@ var DB;
 // Add Event Listener [on Load]
 document.addEventListener('DOMContentLoaded', () => {
     // create the database
-    let TasksDB = indexedDB.open('tasks', 1);
+    let TasksDB = indexedDB.open('tasks', 10);
 
     // if there's an error
     TasksDB.onerror = function() {
@@ -62,36 +62,25 @@ document.addEventListener('DOMContentLoaded', () => {
             taskInput.style.borderColor = "red";
             return;
         }
+       // starting the transaction
+       let tx = DB.transaction(['tasks'], 'readwrite');
 
-        /* 
-        Instruction set to handle Update
-
-        1. Declare the transaction and object store objects 
-        2. Use the id on put method of index db
-        
-        */
-    //    starting the transaction with readwrite type
-       let tx = DB.transaction(['tasks'], 'readwrite')
-    //    request for retriving data from the database
-       let store = tx.objectStore('tasks')
-    //    getting the field id
-       let req = store.get('id')
-       req.onsuccess = e =>{
-           let updatingdTask= {
-               taskname: taskInput.value,
-               date: new Date(),
-               id: id
-           }
-           //put the new task
-           let addedTask = store.put(updatingdTask)
-           addedTask.onsuccess = e=>{
-               console.log('The task is updated successfuly')
-           }
+       //retriving the object store
+       let task = tx.objectStore('tasks');
+       //Use the id on put method of index db
+       let taskUp = {
+        taskname:taskInput.value, 
+        date: new Date(), 
+        id: id
+       }
+       let req = task.put(taskUp)
+       req.onerror = e=>{
+           console.log("There is error on updating ")
+       }
+       req.onsuccess = function (e) {
+           console.log("You are successfuly updated the field");
        }
         history.back();
     }
-
-
-
 
 });
