@@ -171,30 +171,33 @@ document.addEventListener('DOMContentLoaded', () => {
     ascendingBtn.addEventListener('click', ascendingFun)
     descendingBtn.addEventListener('click', descendingFun)
 
+      // for the descending functions
     function ascendingFun(){
         // assignening the variables
-       let listElements;
-       let continueParsing;
-    //    getting the elements from the class collections
-       let unorderedLists = document.getElementById("collection");
-       //see if the lists are ordered or not
-       let ordered = true;
-        while (ordered) {
-            ordered = false;
-            listElements = unorderedLists.getElementsByTagName("LI");
-            for (let i = 0; i < (listElements.length - 1); i++) {
-                continueParsing = false;
-                if (listElements[i].textContent > listElements[i + 1].textContent) {
-                    continueParsing = true;
-                    break;
-                }
-            }
-            if (continueParsing) {
-                listElements[i].parentNode.insertBefore(listElements[i + 1], listElements[i]);
-                ordered = true;
-            }
-        }
-    }
+      let listElements;
+      let continueParsing;
+     //    getting the elements from the class collections
+      let unorderedLists = document.getElementById("collection");
+        //see if the lists are ordered or not
+      unorderedLists = document.getElementById("collection");
+      ordered = true;
+      while (ordered) {
+          ordered = false;
+          listElements = unorderedLists.getElementsByTagName("LI");
+          for (i = 0; i < (listElements.length - 1); i++) {
+              continueParsing = false;
+  
+              if (listElements[i].textContent > listElements[i + 1].textContent) {
+                  continueParsing = true;
+                  break;
+              }
+          }
+          if (continueParsing) {
+              listElements[i].parentNode.insertBefore(listElements[i + 1], listElements[i]);
+              ordered = true;
+          }
+      }
+  }
     // for the descending functions
     function descendingFun(){
           // assignening the variables
