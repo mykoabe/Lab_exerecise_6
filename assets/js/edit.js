@@ -60,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check empty entry
         if (taskInput.value === '') {
             taskInput.style.borderColor = "red";
-
             return;
         }
 
@@ -71,7 +70,24 @@ document.addEventListener('DOMContentLoaded', () => {
         2. Use the id on put method of index db
         
         */
-
+    //    starting the transaction with readwrite type
+       let tx = DB.transaction(['tasks'], 'readwrite')
+    //    request for retriving data from the database
+       let store = tx.objectStore('tasks')
+    //    getting the field id
+       let req = store.get('id')
+       req.onsuccess = e =>{
+           let updatingdTask= {
+               taskname: taskInput.value,
+               date: new Date(),
+               id: id
+           }
+           //put the new task
+           let addedTask = store.put(updatingdTask)
+           addedTask.onsuccess = e=>{
+               console.log('The task is updated successfuly')
+           }
+       }
         history.back();
     }
 

@@ -8,7 +8,10 @@ const clearBtn = document.querySelector('.clear-tasks'); //the all task clear bu
 const reloadIcon = document.querySelector('.fa'); //the reload button at the top navigation 
 
 //DB variable 
+
 let DB;
+let taskArray = []
+
 
 // Add Event Listener [on Load]   
 document.addEventListener('DOMContentLoaded', () => {
@@ -60,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // create a new object with the form info
         let newTask = {
             taskname: taskInput.value,
+            date: new Date(),
         }
 
         // Insert the object into the database 
@@ -74,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         transaction.oncomplete = () => {
             console.log('New appointment added');
-
             displayTaskList();
         }
         transaction.onerror = () => {
@@ -112,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.innerHTML = `
                  <i class="fa fa-remove"></i>
                 &nbsp;
-                <a href="/Lesson 04 [Lab 06]/Finished/edit.html?id=${cursor.value.id}"><i class="fa fa-edit"></i> </a>
+                <a href="./edit.html?id=${cursor.value.id}"><i class="fa fa-edit"></i> </a>
                 `;
                 // Append link to li
                 li.appendChild(link);
@@ -146,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
     }
-
     //clear button event listener   
     clearBtn.addEventListener('click', clearAllTasks);
 
@@ -163,35 +165,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-function sortTasks(e){
-    let container = taskList
-    container.innerHTML = ""
-    let objectStore = DB.transaction('tasks').objectStore('tasks')
-    var allRecords = objectStore.getAll();
-    allRecords.onsuccess = function(){
-        const taskNames = allRecords.result.map((allRecord)=>({
-            taskname = allRecord.taskname,
-            taskDate = allRecord.taskdate,
-        }))
-        taskNames.sort(function(a,b){
-            let aa = a.taskDate;
-            let bb = b.taskDate
-            return aa<bb?-1 : (aa>bb?1:0);
-        }).forEach((li, index)=>{
-            list = document.createElement('li')
-            list.setAttribute('data-task-id', index+1)
-            list.className = "collection-item";
-            list.appendChild(document.createTextNode(li.taskname))
-            const link = document.createElement('a')
-            link.className = "delete-item secondary-content"
-            link.innerHTML = `
-                 <span style = "margin-right:80px">${li.taskDate.toLocalDateString()}</spam>
-                 <i class="fa fa-remove"></i>
-                &nbsp;
-                <a href="/Lesson 04 [Lab 06]/Finished/edit.html?id=${index+1}"><i class="fa fa-edit"></i> </a>
-                `;
-            list.appendChild(link)
-            container.appendChild(list)
-        });
-    }
+// sorting in ascending order
+let ascendingBtn = document.querySelector('.ascending')
+let descendingBtn = document.querySelector('.descending')
+
+ascendingBtn.addEventListener('click', ascendingFun)
+// descendingBtn.addEventListener('click', descendingFun)
+
+
+// function ascendingFun(){
+//     let i = 0;
+//     let transaction = DB.transaction("tasks");
+//     let store = transaction.objectStore("tasks");
+//     let req = store.openCursor();
+//     req.onsuccess = e=>{
+//         let cursor = e.target.result
+//         if(cursor){
+//             taskArray[i] = cursor.value
+//             i++
+//             cursor.continue();
+//         }
+//      taskArray.sort(function(a,b){return a.taskname - b.taskname})
+//      taskList.innerHTML = ""
+//      var i = 0
+//      for (i = 0; i<taskArray.length; i++){
+//          const li = createElement('LI')
+//          li.className = 'collection-item'
+//          li.setAttribute('data-task-id', taskArray[i].id)
+//          li.appendChild(document.createTextNode(taskArray[i].taskname))
+//          const link = document.createElement('a')
+//          link.className('delete-item secondary-content')
+//          link.innerHTML = '<i class="fa fa-remove"></i>  &nbsp;<a href="../edit.html?id=${cursor.value.id}"><i class="fa fa-edit"></i> </a> ;';
+//          li.appendChild(link);                                                       // Append link to li
+//          taskList.appendChild(li); 
+//      }
+//     }
+    
+// }
+
+function ascendingFun(){
+     let container = taskList;
+     container.innerHTML = ""
+     let tx = DB.transaction('tasks').objectStore('tasks')
+     let allRecords = tx.getAll();
+     allRecords.onsuccess = e=>{
+         const taskNames = allRecords.result.map((allRecord)=>({
+            taskname: allRecord.taskname,
+            date: allRecord.date
+         }))
+
+         taskNames.sort((a,b)=>{
+             let aa = a.date
+             let bb = b.date
+             return aa<bb ?-1: (aa>bb ? 1:0);
+         }).forEach((li,index)=>{
+             li = document.createElement('li');
+             li.setAttribute('data-task-id', cursor.value.id);
+             li.className = 'collection-item';
+             li.appendChild(document.createTextNode(li.taskname));
+             const link = document.createElement('a');
+             link.className = 'delete-item secondary-content';
+             link.innerHTML = `
+             <span>${li.date.toLocalDateString()}</span>
+              <i class="fa fa-remove"></i>
+             &nbsp;
+             <a href="./edit.html?id=${index+1}"><i class="fa fa-edit"></i> </a>
+             `;
+             li.appendChild(link);
+             container.appendChild(li);
+         })
+     }
 }
+
